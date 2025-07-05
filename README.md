@@ -29,6 +29,20 @@ Run the script with command line arguments to process images in batch.
 python -m dizzydazzle --command "<prompt>" [options]
 ```
 
+If the library runs correctly, you should see output similar to this:
+
+```
+Loading pipeline components...: 100%|███████████████████████████████████████████████████████████████████████████| 6/6 [00:01<00:00,  4.70it/s]
+Token indices sequence length is longer than the specified maximum sequence length for this model (97 > 77). Running this sequence through the model will result in indexing errors
+The following part of your input was truncated because CLIP can only handle sequences up to 77 tokens: ['. optionally add a timestamp overlay and subtle visual noise typical of analog or digital security footage .']
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 10/10 [00:34<00:00,  3.47s/it]
+Saved edited image to images/output\img_1.jpg
+The following part of your input was truncated because CLIP can only handle sequences up to 77 tokens: ['. optionally add a timestamp overlay and subtle visual noise typical of analog or digital security footage .']
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 10/10 [00:38<00:00,  3.83s/it]
+Saved edited image to images/output\img_10.jpg
+```
+
+
 ### Default folders
 
 - Input images: `images/input`  
