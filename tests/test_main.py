@@ -1,7 +1,6 @@
 import os
 import sys
 import types
-import pytest
 from unittest.mock import patch, MagicMock
 
 from PIL import Image  # dodajemy, bo używane jest Image.Resampling
