@@ -3,6 +3,7 @@
 
 **dizzydazzle** is a Python library for batch image editing using generative AI models guided by natural language prompts. It allows you to transform images (e.g. apply effects like fog, pixelation, color reduction) via a simple CLI.
 
+![Tests](https://github.com/albrzykowski/dizzydazzle/actions/workflows/tests.yml/badge.svg)
 ---
 
 ## Installation

@@ -27,5 +27,5 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          coverage run -m pytest
-          coverage report
+          coverage run --source=main -m pytest
+          coverage report --fail-under=100
