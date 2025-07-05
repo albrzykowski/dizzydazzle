@@ -16,7 +16,7 @@ def edit_image_with_prompt(pipe, prompt: str, image_path: str, output_path: str,
     edited.save(output_path)
     print(f"Saved edited image to {output_path}")
 
-def main():
+def run():
     parser = argparse.ArgumentParser(description="Batch edit images with Stable Diffusion and LLM prompt.")
     parser.add_argument('--command', required=True, help='Base text prompt for LLM.')
     parser.add_argument('--input_dir', default="images/input", help='Input directory with images.')
@@ -39,6 +39,3 @@ def main():
             input_path = os.path.join(args.input_dir, filename)
             output_path = os.path.join(args.output_dir, filename)
             edit_image_with_prompt(pipe, args.command, input_path, output_path, args.num_inference_steps, args.guidance_scale, args.max_size)
-
-if __name__ == "__main__":
-    main()

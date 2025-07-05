@@ -1,24 +1,17 @@
 import os
-import sys
 import types
 from unittest.mock import patch, MagicMock
 
-from PIL import Image  # dodajemy, bo używane jest Image.Resampling
-
-# dodajemy ścieżkę do katalogu głównego, gdzie jest main.py
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from main import load_image, edit_image_with_prompt, main
+from PIL import Image  # potrzebne do assertów thumbnail
 
 
-def test_load_image_creates_thumbnail(monkeypatch):
+@patch("dizzydazzle.dizzydazzle.Image.open")  # mockujemy Image.open we właściwym module
+def test_load_image_creates_thumbnail(mock_open):
     mock_img = MagicMock()
     mock_img.thumbnail = MagicMock()
+    mock_open.return_value.convert.return_value = mock_img
 
-    mock_open = MagicMock()
-    mock_open.return_value.convert.return_value = mock_img  # convert zwraca mock_img
-
-    monkeypatch.setattr("main.Image.open", mock_open)
+    from dizzydazzle import load_image
 
     result = load_image("fake_path.jpg", 100)
 
@@ -28,8 +21,7 @@ def test_load_image_creates_thumbnail(monkeypatch):
     assert result == mock_img
 
 
-
-@patch("main.load_image")
+@patch("dizzydazzle.dizzydazzle.load_image")  # patchujemy load_image wewnątrz dizzydazzle.py
 def test_edit_image_with_prompt_saves_image(mock_load_image):
     mock_image = MagicMock()
     mock_image.save = MagicMock()
@@ -38,6 +30,8 @@ def test_edit_image_with_prompt_saves_image(mock_load_image):
     mock_pipe = MagicMock()
     mock_pipe.return_value.images = [mock_image]
 
+    from dizzydazzle import edit_image_with_prompt
+
     edit_image_with_prompt(mock_pipe, "prompt", "in.jpg", "out.jpg", 5, 7.5, 100)
 
     mock_load_image.assert_called_once_with("in.jpg", 100)
@@ -45,12 +39,13 @@ def test_edit_image_with_prompt_saves_image(mock_load_image):
     mock_image.save.assert_called_once_with("out.jpg")
 
 
-@patch("main.edit_image_with_prompt")
-@patch("main.os.listdir")
-@patch("main.os.makedirs")
-@patch("main.argparse.ArgumentParser.parse_args")
-@patch("main.StableDiffusionInstructPix2PixPipeline.from_pretrained")
-@patch("main.torch.cuda.is_available")
+@patch("dizzydazzle.dizzydazzle.load_image")  # dodajemy patch load_image
+@patch("dizzydazzle.dizzydazzle.edit_image_with_prompt")
+@patch("dizzydazzle.os.listdir")
+@patch("dizzydazzle.os.makedirs")
+@patch("dizzydazzle.argparse.ArgumentParser.parse_args")
+@patch("dizzydazzle.StableDiffusionInstructPix2PixPipeline.from_pretrained")
+@patch("dizzydazzle.torch.cuda.is_available")
 def test_main_calls_edit_image_with_prompt(
     mock_cuda_available,
     mock_from_pretrained,
@@ -58,13 +53,11 @@ def test_main_calls_edit_image_with_prompt(
     mock_makedirs,
     mock_listdir,
     mock_edit_image,
+    mock_load_image
 ):
-    import os
-
     mock_cuda_available.return_value = False
 
     mock_pipe = MagicMock()
-    # Ustawiamy, że .to() zwraca mock_pipe
     mock_from_pretrained.return_value.to.return_value = mock_pipe
 
     args = types.SimpleNamespace(
@@ -79,7 +72,10 @@ def test_main_calls_edit_image_with_prompt(
 
     mock_listdir.return_value = ["a.png", "b.txt", "c.jpg"]
 
-    main()
+    mock_load_image.return_value = MagicMock()
+
+    from dizzydazzle import run
+    run()
 
     mock_makedirs.assert_called_once_with("output_dir", exist_ok=True)
 
@@ -100,6 +96,3 @@ def test_main_calls_edit_image_with_prompt(
         assert args[6] == 128
 
     assert mock_edit_image.call_count == 2
-
-
-

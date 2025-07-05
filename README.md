@@ -38,14 +38,14 @@ python -m dizzydazzle --command "<prompt>" [options]
 
 ## Arguments
 
-| Argument                | Description                                                                                  | Default             |
-|-------------------------|----------------------------------------------------------------------------------------------|---------------------|
-| `--command`             | **(required)** Text prompt describing the desired image transformation                       | —                   |
-| `--input_dir`           | Directory containing input images to process                                                | `images/input`       |
-| `--output_dir`          | Directory where edited images will be saved                                                | `images/output`      |
-| `--max_size`            | Maximum dimension (width or height) to resize input images (maintains aspect ratio)         | `640`                |
-| `--num_inference_steps` | Number of inference steps for the generative model (higher = better quality but slower)     | `50`                 |
-| `--guidance`            | Guidance scale controlling adherence to the prompt (higher = more faithful to prompt)       | `7.5`                |
+| Argument                | Description                                                                                  | Default                                                           |
+|-------------------------|----------------------------------------------------------------------------------------------|-------------------------------------------------------------------|
+| `--command`             | **(required)** Text prompt describing the desired image transformation. Limited to 77 tokens (according to https://github.com/openai/CLIP) | —                   |
+| `--input_dir`           | Directory containing input images to process                                                                                               | `images/input`      |
+| `--output_dir`          | Directory where edited images will be saved                                                                                                | `images/output`     |
+| `--max_size`            | Maximum dimension (width or height) to resize input images (maintains aspect ratio)                                                        | `640`               |
+| `--num_inference_steps` | Number of inference steps for the generative model (higher = better quality but slower)                                                    | `50`                |
+| `--guidance`            | Guidance scale controlling adherence to the prompt (higher = more faithful to prompt)                                                      | `7.5`               |
 
 ---
 
