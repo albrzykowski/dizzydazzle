@@ -9,14 +9,13 @@ def parse_requirements(filename):
 setup(
     name="dizzydazzle",
     version="0.1.0",
-    author="Your Name",
-    author_email="your.email@example.com",
-    description="A versatile image editing tool using Stable Diffusion and LLM prompts",
+    author="LA",
+    description="A library for batch image editing using Stable Diffusion InstructPix2Pix, capable of processing multiple images from a folder, guided by text prompts with configurable inference parameters, and runnable with or without CUDA support. ",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/dizzydazzle",
+    url="https://github.com/albrzykowski/dizzydazzle",
     packages=find_packages(),
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     install_requires=parse_requirements("requirements.txt"),
     classifiers=[
         "Programming Language :: Python :: 3",
