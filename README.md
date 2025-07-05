@@ -2,7 +2,7 @@
 # DizzyDazzle
 
 [![Build](https://github.com/albrzykowski/dizzydazzle/actions/workflows/tests.yml/badge.svg)](https://github.com/albrzykowski/dizzydazzle/actions/workflows/tests.yml)
-![Python](https://img.shields.io/badge/python-3.8+-blue)
+![Python](https://img.shields.io/badge/python-3.10+-blue)
 ![License](https://img.shields.io/github/license/albrzykowski/dizzydazzle)
 ![Last Commit](https://img.shields.io/github/last-commit/albrzykowski/dizzydazzle)
 ![Lint](https://img.shields.io/badge/linting-ruff-blue)
@@ -17,7 +17,7 @@ DizzyDazzle is a superlight  Python library for batch image editing using genera
 pip install git+https://github.com/albrzykowski/dizzydazzle.git
 ```
 
-Make sure you have Python 3.8+ and dependencies installed automatically.
+Make sure you have Python 3.10+ and dependencies installed automatically.
 
 ---
 
@@ -54,7 +54,7 @@ python -m dizzydazzle --command "<prompt>" [options]
 Apply a fog and CCTV-style effect to all images from default folder with custom size and steps:
 
 ```bash
-python -m dizzydazzle --command "Add fog and CCTV effect: pixelated, limited colors, timestamp overlay." --max_size 300 --num_inference_steps 30 --guidance 8
+python -m dizzydazzle --command "Add CCTV effect: pixelated, limited colors" --max_size 300 --num_inference_steps 30 --guidance 8
 ```
 
 ---
