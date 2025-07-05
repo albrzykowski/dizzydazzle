@@ -1,9 +1,15 @@
 
 # dizzydazzle
 
+[![Build](https://github.com/albrzykowski/dizzydazzle/actions/workflows/tests.yml/badge.svg)](https://github.com/albrzykowski/dizzydazzle/actions/workflows/tests.yml)
+[![Coverage](https://coveralls.io/repos/github/albrzykowski/dizzydazzle/badge.svg?branch=main)](https://coveralls.io/github/albrzykowski/dizzydazzle?branch=main)
+![Python](https://img.shields.io/badge/python-3.8+-blue)
+![License](https://img.shields.io/github/license/albrzykowski/dizzydazzle)
+![Last Commit](https://img.shields.io/github/last-commit/albrzykowski/dizzydazzle)
+![Lint](https://img.shields.io/badge/linting-ruff-blue)
+
 **dizzydazzle** is a Python library for batch image editing using generative AI models guided by natural language prompts. It allows you to transform images (e.g. apply effects like fog, pixelation, color reduction) via a simple CLI.
 
-![Tests](https://github.com/albrzykowski/dizzydazzle/actions/workflows/tests.yml/badge.svg)
 ---
 
 ## Installation
