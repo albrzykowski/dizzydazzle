@@ -2,7 +2,6 @@
 # dizzydazzle
 
 [![Build](https://github.com/albrzykowski/dizzydazzle/actions/workflows/tests.yml/badge.svg)](https://github.com/albrzykowski/dizzydazzle/actions/workflows/tests.yml)
-[![Coverage](https://coveralls.io/repos/github/albrzykowski/dizzydazzle/badge.svg?branch=main)](https://coveralls.io/github/albrzykowski/dizzydazzle?branch=main)
 ![Python](https://img.shields.io/badge/python-3.8+-blue)
 ![License](https://img.shields.io/github/license/albrzykowski/dizzydazzle)
 ![Last Commit](https://img.shields.io/github/last-commit/albrzykowski/dizzydazzle)
