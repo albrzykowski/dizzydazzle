@@ -1,0 +1,12 @@
+[run]
+source = dizzydazzle
+omit =
+    tests/*
+    */_remote_module_non_scriptable.py
+    /tmp/*
+
+[report]
+omit =
+    tests/*
+    */_remote_module_non_scriptable.py
+    /tmp/*
