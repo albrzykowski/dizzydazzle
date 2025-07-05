@@ -1,6 +1,7 @@
 [run]
 source = dizzydazzle
 omit =
+    dizzydazzle/__main__.py
     tests/*
     */_remote_module_non_scriptable.py
     /tmp/*
