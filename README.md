@@ -8,7 +8,7 @@
 ## Installation
 
 ```bash
-pip install dizzydazzle
+pip install git+https://github.com/albrzykowski/dizzydazzle.git
 ```
 
 Make sure you have Python 3.8+ and dependencies installed automatically.
