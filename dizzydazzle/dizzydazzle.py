@@ -4,6 +4,7 @@ from diffusers import StableDiffusionInstructPix2PixPipeline
 import torch
 from PIL import Image
 import logging
+import sys
 
 logger = logging.getLogger("dizzydazzle.dizzydazzle")
 
@@ -29,6 +30,14 @@ def run():
     parser.add_argument('--max_size', type=int, default=640, help='Max image size to load (default 640).')
 
     args = parser.parse_args()
+    
+    if not os.path.isdir(args.input_dir):
+        logger.error(f"Input directory '{args.input_dir}' does not exist.")
+        sys.exit(1)
+
+    if not os.path.isdir(args.output_dir):
+        logger.warning(f"Output directory '{args.output_dir}' does not exist. Creating it.")
+        os.makedirs(args.output_dir, exist_ok=True)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     pipe = StableDiffusionInstructPix2PixPipeline.from_pretrained(

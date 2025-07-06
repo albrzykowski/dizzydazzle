@@ -45,6 +45,10 @@ Loading pipeline components...: 100%|██████████████�
 - Input images: `images/input`  
 - Output images: `images/output`
 
+> **Note:**  
+> If the input folder `images/input` does not exist, the program will terminate with an error.  
+> If the output folder `images/output` does not exist, it will be automatically created before processing images.
+
 ---
 
 ## Arguments
