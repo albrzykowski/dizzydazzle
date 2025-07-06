@@ -2,10 +2,10 @@ import os
 import types
 from unittest.mock import patch, MagicMock
 
-from PIL import Image  # potrzebne do assertów thumbnail
+from PIL import Image
 
 
-@patch("dizzydazzle.dizzydazzle.Image.open")  # mockujemy Image.open we właściwym module
+@patch("dizzydazzle.dizzydazzle.Image.open")
 def test_load_image_creates_thumbnail(mock_open):
     mock_img = MagicMock()
     mock_img.thumbnail = MagicMock()
@@ -21,7 +21,7 @@ def test_load_image_creates_thumbnail(mock_open):
     assert result == mock_img
 
 
-@patch("dizzydazzle.dizzydazzle.load_image")  # patchujemy load_image wewnątrz dizzydazzle.py
+@patch("dizzydazzle.dizzydazzle.load_image")
 def test_edit_image_with_prompt_saves_image(mock_load_image):
     mock_image = MagicMock()
     mock_image.save = MagicMock()
@@ -39,7 +39,7 @@ def test_edit_image_with_prompt_saves_image(mock_load_image):
     mock_image.save.assert_called_once_with("out.jpg")
 
 
-@patch("dizzydazzle.dizzydazzle.load_image")  # dodajemy patch load_image
+@patch("dizzydazzle.dizzydazzle.load_image")
 @patch("dizzydazzle.dizzydazzle.edit_image_with_prompt")
 @patch("dizzydazzle.os.listdir")
 @patch("dizzydazzle.os.makedirs")
