@@ -3,6 +3,9 @@ import os
 from diffusers import StableDiffusionInstructPix2PixPipeline
 import torch
 from PIL import Image
+import logging
+
+logger = logging.getLogger("dizzydazzle.dizzydazzle")
 
 def load_image(path: str, max_size: int) -> Image.Image:
     image = Image.open(path).convert("RGB")
@@ -14,7 +17,7 @@ def edit_image_with_prompt(pipe, prompt: str, image_path: str, output_path: str,
     image = load_image(image_path, max_size)
     edited = pipe(prompt=prompt, image=image, num_inference_steps=num_inference_steps, guidance_scale=guidance_scale).images[0]
     edited.save(output_path)
-    print(f"Saved edited image to {output_path}")
+    logger.info(f"Saved edited image to {output_path}")
 
 def run():
     parser = argparse.ArgumentParser(description="Batch edit images with Stable Diffusion and LLM prompt.")
