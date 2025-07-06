@@ -34,9 +34,9 @@ If the library runs correctly, you should see output similar to this:
 ```
 Loading pipeline components...: 100%|███████████████████████████████████████████████████████████████████████████| 6/6 [00:01<00:00,  4.70it/s]
 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 10/10 [00:34<00:00,  3.47s/it]
-Saved edited image to images/output/img_1.jpg
+2025-07-06 16:49:46,403 [INFO] dizzydazzle.dizzydazzle: Saved edited image to images/output/img_1.jpg
 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 10/10 [00:38<00:00,  3.83s/it]
-Saved edited image to images/output/img_10.jpg
+2025-07-06 16:49:57,467 [INFO] dizzydazzle.dizzydazzle: Saved edited image to images/output/img_2.jpg
 ```
 
 
