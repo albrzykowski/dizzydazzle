@@ -8,7 +8,7 @@ def parse_requirements(filename):
 
 setup(
     name="dizzydazzle",
-    version="0.5.0",
+    version="0.6.0",
     author="LA",
     description="A library for batch image editing using Stable Diffusion InstructPix2Pix, capable of processing multiple images from a folder, guided by text prompts with configurable inference parameters, and runnable with or without CUDA support.",
     long_description=open("README.md", encoding="utf-8").read(),
