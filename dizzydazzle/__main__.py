@@ -1,4 +1,4 @@
-from dizzydazzle import run
+from dizzydazzle import main
 import logging
 
 logging.basicConfig(
@@ -7,4 +7,4 @@ logging.basicConfig(
 )
 
 if __name__ == "__main__":
-    run()
+    main()

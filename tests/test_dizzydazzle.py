@@ -1,162 +1,85 @@
-import os
-import types
-from unittest.mock import patch, MagicMock
+import pytest
+from unittest.mock import MagicMock
+import argparse
+
 from PIL import Image
+import dizzydazzle
 
 
-@patch("dizzydazzle.dizzydazzle.Image.open")
-def test_load_image_creates_thumbnail(mock_open):
-    mock_img = MagicMock()
-    mock_img.thumbnail = MagicMock()
-    mock_open.return_value.convert.return_value = mock_img
-
-    from dizzydazzle import load_image
-
-    result = load_image("fake_path.jpg", 100)
-
-    mock_open.assert_called_once_with("fake_path.jpg")
-    mock_open.return_value.convert.assert_called_once_with("RGB")
-    mock_img.thumbnail.assert_called_once_with((100, 100), Image.Resampling.LANCZOS)
-    assert result == mock_img
+@pytest.fixture
+def test_image(tmp_path):
+    image_path = tmp_path / "test.jpg"
+    img = Image.new("RGB", (1024, 1024))
+    img.save(image_path)
+    return image_path
 
 
-@patch("dizzydazzle.dizzydazzle.load_image")
-def test_edit_image_with_prompt_saves_image(mock_load_image):
-    mock_image = MagicMock()
-    mock_image.save = MagicMock()
-    mock_load_image.return_value = mock_image
-
-    mock_pipe = MagicMock()
-    mock_pipe.return_value.images = [mock_image]
-
-    from dizzydazzle import edit_image_with_prompt
-
-    edit_image_with_prompt(mock_pipe, "prompt", "in.jpg", "out.jpg", 5, 7.5, 100)
-
-    mock_load_image.assert_called_once_with("in.jpg", 100)
-    mock_pipe.assert_called_once_with(prompt="prompt", image=mock_image, num_inference_steps=5, guidance_scale=7.5)
-    mock_image.save.assert_called_once_with("out.jpg")
+def test_load_image_resizing(test_image):
+    resized = dizzydazzle.load_image(test_image, max_size=640)
+    assert resized.width <= 640
+    assert resized.height <= 640
 
 
-@patch("dizzydazzle.dizzydazzle.load_image")
-@patch("dizzydazzle.dizzydazzle.edit_image_with_prompt")
-@patch("dizzydazzle.os.listdir")
-@patch("dizzydazzle.os.makedirs")
-@patch("dizzydazzle.argparse.ArgumentParser.parse_args")
-@patch("dizzydazzle.StableDiffusionInstructPix2PixPipeline.from_pretrained")
-@patch("dizzydazzle.torch.cuda.is_available")
-@patch("dizzydazzle.os.path.isdir")
-def test_main_calls_edit_image_with_prompt(
-    mock_isdir,
-    mock_cuda_available,
-    mock_from_pretrained,
-    mock_parse_args,
-    mock_makedirs,
-    mock_listdir,
-    mock_edit_image,
-    mock_load_image
-):
-    mock_isdir.return_value = True
-    mock_cuda_available.return_value = False
-
-    mock_pipe = MagicMock()
-    mock_from_pretrained.return_value.to.return_value = mock_pipe
-
-    args = types.SimpleNamespace(
-        command="test prompt",
-        input_dir="input_dir",
-        output_dir="output_dir",
-        num_inference_steps=10,
-        guidance_scale=5.0,
-        max_size=128
-    )
-    mock_parse_args.return_value = args
-
-    mock_listdir.return_value = ["a.png", "b.txt", "c.jpg"]
-    mock_load_image.return_value = MagicMock()
-
-    from dizzydazzle import run
-    run()
-
-    mock_makedirs.assert_called_once_with("output_dir", exist_ok=True)
-
-    for call in mock_edit_image.call_args_list:
-        args = call.args
-        assert args[0] is mock_pipe
-        assert args[1] == "test prompt"
-        assert os.path.normpath(args[2]) in [
-            os.path.normpath(os.path.join("input_dir", "a.png")),
-            os.path.normpath(os.path.join("input_dir", "c.jpg"))
-        ]
-        assert os.path.normpath(args[3]) in [
-            os.path.normpath(os.path.join("output_dir", "a.png")),
-            os.path.normpath(os.path.join("output_dir", "c.jpg"))
-        ]
-        assert args[4] == 10
-        assert args[5] == 5.0
-        assert args[6] == 128
-
-    assert mock_edit_image.call_count == 2
-
-
-@patch("dizzydazzle.dizzydazzle.edit_image_with_prompt")
-@patch("dizzydazzle.os.listdir")
-@patch("dizzydazzle.torch.cuda.is_available")
-@patch("dizzydazzle.StableDiffusionInstructPix2PixPipeline.from_pretrained")
-@patch("dizzydazzle.dizzydazzle.logger")
-@patch("dizzydazzle.argparse.ArgumentParser.parse_args")
-@patch("dizzydazzle.sys.exit")
-@patch("dizzydazzle.os.path.isdir")
-@patch("dizzydazzle.os.makedirs")
-def test_input_output_dir_checks(
-    mock_makedirs,
-    mock_isdir,
-    mock_sys_exit,
-    mock_parse_args,
-    mock_logger,
-    mock_from_pretrained,
-    mock_cuda_available,
-    mock_listdir,
-    mock_edit_image,
-):
-    from dizzydazzle import run
-    import types
-    from unittest.mock import MagicMock
-
-    args = types.SimpleNamespace(
+def test_process_images_invalid_input_dir(tmp_path, caplog):
+    args = argparse.Namespace(
+        input_dir="nonexistent",
+        output_dir=tmp_path / "output",
         command="prompt",
-        input_dir="input_dir",
-        output_dir="output_dir",
-        num_inference_steps=10,
-        guidance_scale=5.0,
-        max_size=128
+        num_inference_steps=50,
+        guidance_scale=7.5,
+        max_size=640
     )
-    mock_parse_args.return_value = args
-    mock_cuda_available.return_value = False
-    mock_from_pretrained.return_value.to.return_value = MagicMock()
 
-    # Test: input_dir nie istnieje
-    mock_isdir.side_effect = lambda path: False if "input" in path else True
-    run()
-    mock_logger.error.assert_called_once_with("Input directory 'input_dir' does not exist.")
-    mock_sys_exit.assert_called_once_with(1)
+    with caplog.at_level("ERROR", logger="dizzydazzle.dizzydazzle"):
+        with pytest.raises(SystemExit):
+            dizzydazzle.process_images(args)
 
-    # Reset mocków
-    mock_logger.reset_mock()
-    mock_sys_exit.reset_mock()
-    mock_makedirs.reset_mock()
-    mock_isdir.reset_mock()
-    mock_listdir.reset_mock()
+    assert "Input directory" in caplog.text
 
-    # Test: input_dir istnieje, output_dir nie istnieje
-    mock_isdir.side_effect = lambda path: True if "input" in path else False
-    mock_listdir.return_value = []
 
-    run()
+def test_edit_image_with_prompt_success(tmp_path, mocker):
+    image_path = tmp_path / "image.jpg"
+    output_path = tmp_path / "out.jpg"
+    img = Image.new("RGB", (512, 512))
+    img.save(image_path)
 
-    mock_logger.warning.assert_called_once_with("Output directory 'output_dir' does not exist. Creating it.")
+    mock_pipe = MagicMock()
+    mock_pipe.return_value.images = [img]
 
-    # Sprawdź, że makedirs był wywołany dokładnie dwa razy z odpowiednimi argumentami
-    assert mock_makedirs.call_count == 2
-    for call_args in mock_makedirs.call_args_list:
-        assert call_args == (("output_dir",), {"exist_ok": True})
+    mocker.patch("dizzydazzle.Image.open", return_value=img)
+
+    dizzydazzle.edit_image_with_prompt(
+        pipe=mock_pipe,
+        prompt="prompt",
+        image_path=image_path,
+        output_path=output_path,
+        num_inference_steps=50,
+        guidance_scale=7.5,
+        max_size=640
+    )
+
+    assert output_path.exists()
+
+
+def test_output_dir_creation(mocker, tmp_path):
+    input_dir = tmp_path / "in"
+    input_dir.mkdir()
+    output_dir = tmp_path / "out"
+
+    args = mocker.Mock(
+        input_dir=input_dir,
+        output_dir=output_dir,
+        command="prompt",
+        num_inference_steps=50,
+        guidance_scale=7.5,
+        max_size=640
+    )
+
+    mock_pipe = mocker.patch("dizzydazzle.StableDiffusionInstructPix2PixPipeline.from_pretrained")
+    mock_pipe.return_value.to.return_value = MagicMock()
+
+    mocker.patch("dizzydazzle.tqdm", return_value=[])
+
+    dizzydazzle.process_images(args)
+
+    assert output_dir.exists()
