@@ -1,5 +1,4 @@
 import argparse
-import os
 from diffusers import StableDiffusionInstructPix2PixPipeline
 import torch
 from PIL import Image
@@ -10,52 +9,17 @@ from pathlib import Path
 from tqdm import tqdm  # Install via: pip install tqdm
 
 logger = logging.getLogger("dizzydazzle.dizzydazzle")
-
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+    
 def load_image(path: str, max_size: int) -> Image.Image:
     image = Image.open(path).convert("RGB")
     image.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
     return image
 
-def run():
-    parser = argparse.ArgumentParser(description="Batch edit images with Stable Diffusion and LLM prompt.")
-    parser.add_argument('--command', required=True, help='Base text prompt for LLM.')
-    parser.add_argument('--input_dir', default="images/input", help='Input directory with images.')
-    parser.add_argument('--output_dir', default="images/output", help='Output directory for edited images.')
-    parser.add_argument('--num_inference_steps', type=int, default=50, help='Number of inference steps (default 50).')
-    parser.add_argument('--guidance_scale', type=float, default=7.5, help='Guidance scale (default 7.5).')
-    parser.add_argument('--max_size', type=int, default=640, help='Max image size to load (default 640).')
-
-    args = parser.parse_args()
-    
-    if not os.path.isdir(args.input_dir):
-        logger.error(f"Input directory '{args.input_dir}' does not exist.")
-        sys.exit(1)
-
-    if not os.path.isdir(args.output_dir):
-        logger.warning(f"Output directory '{args.output_dir}' does not exist. Creating it.")
-        os.makedirs(args.output_dir, exist_ok=True)
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    pipe = StableDiffusionInstructPix2PixPipeline.from_pretrained(
-        "timbrooks/instruct-pix2pix", safety_checker=None
-    ).to(device)
-
-    os.makedirs(args.output_dir, exist_ok=True)
-
-    for filename in os.listdir(args.input_dir):
-        if filename.lower().endswith((".png", ".jpg", ".jpeg", ".bmp", ".gif")):
-            input_path = os.path.join(args.input_dir, filename)
-            output_path = os.path.join(args.output_dir, filename)
-            edit_image_with_prompt(pipe, args.command, input_path, output_path, args.num_inference_steps, args.guidance_scale, args.max_size)
-
-logger = logging.getLogger("dizzydazzle.dizzydazzle")
-
-
-def configure_logging():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+logger = logging.getLogger("dizzydazzle.dizzydazzle")    
 
 
 def edit_image_with_prompt(
@@ -135,6 +99,5 @@ def parse_args():
 
 
 def main():
-    configure_logging()
     args = parse_args()
     process_images(args)

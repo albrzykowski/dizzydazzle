@@ -13,13 +13,11 @@ def test_load_image_resizes(tmp_path):
     assert result.width <= 640
     assert result.height <= 640
 
-
 def test_load_image_invalid_file(tmp_path):
     bad_path = tmp_path / "bad.jpg"
     bad_path.write_bytes(b"not an image")
     with pytest.raises(Exception):
         dd.load_image(bad_path, max_size=640)
-
 
 def test_edit_image_success(tmp_path, mocker):
     input_path = tmp_path / "in.jpg"
@@ -131,7 +129,6 @@ def test_process_images_creates_output_dir(mocker, tmp_path, caplog):
 
 
 def test_main_executes(mocker):
-    mocker.patch("dizzydazzle.dizzydazzle.configure_logging")
     mocker.patch("dizzydazzle.dizzydazzle.parse_args")
     mocker.patch("dizzydazzle.dizzydazzle.process_images")
 
@@ -140,5 +137,4 @@ def test_main_executes(mocker):
 
     dd.main()
 
-    dd.configure_logging.assert_called_once()
     dd.process_images.assert_called_once_with(mock_args)
